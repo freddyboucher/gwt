@@ -571,7 +571,8 @@ public final class String implements Comparable<String>, CharSequence,
    */
   public String replaceAll(String regex, String replace) {
     replace = translateReplaceString(replace);
-    return nativeReplaceAll(regex, replace);
+    Object jsRegEx = createRegExp(regex, "g");
+    return replace(this, jsRegEx, replace);
   }
 
   String nativeReplaceAll(String regex, String replace) {
@@ -592,12 +593,12 @@ public final class String implements Comparable<String>, CharSequence,
     return asNativeString().replace(jsRegEx, replace);
   }
 
-  private static native int getMatchIndex(Object matchObject) /*-{
-    return matchObject.index;
+  private static native Object createRegExp(String regex, String mode) /*-{
+    return RegExp(regex, mode);
   }-*/;
 
-  private static native int getMatchLength(Object matchObject, int index) /*-{
-    return matchObject[index].length;
+  private static native String replace(String s, Object regex, String replace) /*-{
+    return s.replace(regex, replace);
   }-*/;
 
   /**
